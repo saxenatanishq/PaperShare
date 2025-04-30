@@ -1,0 +1,26 @@
+{% extends 'paper/layout.html' %}
+{% block title %}Edit Section{% endblock %}
+
+{% block body %}
+<h2>Edit {{section.name}} here!</h2>
+<form action="{% url 'edit_section' section.id %}" method="POST">
+    {% csrf_token %}
+    <label for="id_name">Name:</label>
+    <input type="text" name="name" maxlength="100" required id="id_name" value="{{section.name}}">
+    <label for="id_students">Students:</label><br>
+    {% for student in students %}
+        {% if student in section.students.all %}
+        <label><input type="checkbox" name="students" value="{{student.id}}" checked>{{student.username}}</label><br>
+        {% else %}
+        <label><input type="checkbox" name="students" value="{{student.id}}">{{student.username}}</label><br>
+        {% endif %}
+    {% endfor %}
+    <button type="submit">Submit</button>       
+</form>
+<form action="{% url 'edit_section' section.id %}" method="post">
+    {% csrf_token %}
+    <button type="submit" name="form_type" value="delete" class="btn btn-danger">Delete section</button>
+</form>
+
+<a href="{% url 'allot' %}">Go back</a>
+{% endblock %}

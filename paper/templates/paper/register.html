@@ -1,0 +1,44 @@
+{% extends "paper/layout.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+<h2>Register</h2>
+
+    {% if message %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <form action="{% url 'register' %}" method="post" class="p-4 bg-light rounded shadow-sm">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input class="form-control" autofocus type="text" name="username" id="username" placeholder="Username">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email Address</label>
+            <input class="form-control" type="email" name="email" id="email" placeholder="Email Address">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input class="form-control" type="password" name="password" id="password" placeholder="Password">
+        </div>
+        <div class="mb-3">
+            <label for="confirmation" class="form-label">Confirm Password</label>
+            <input class="form-control" type="password" name="confirmation" id="confirmation" placeholder="Confirm Password">
+        </div>
+        <div class="mb-3">
+            <label for="designation" class="form-label">Designation</label>
+            <select name="designation" id="designation" class="form-select">
+                <option value="student">Student</option>
+                <option value="professor">Professor</option>
+            </select>
+        </div>
+        <button class="btn btn-primary w-100" type="submit">Register</button>
+    </form>
+
+    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'paper/layout.html' %}
+{% block title %}Upload checked papers{% endblock %}
+{% block body %}
+<h2>Upload checked papers here!</h2>
+<form action="{% url 'upload_checked' paper.id %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for student in students %}
+    <div class="mb-3">
+        <label for="id_pdf_file_{{ student.id }}" class="form-label">Checked paper of {{ student.username }}</label>
+        <input type="file" name="{{ student.id }}" id="id_pdf_file_{{ student.id }}" class="form-control" required>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+{% endblock %}

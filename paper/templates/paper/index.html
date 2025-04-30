@@ -1,0 +1,54 @@
+{% extends "paper/layout.html" %}
+
+{% block body %}
+<div class="bg-light p-5 rounded-lg mb-4">
+    <h1 class="display-4">Welcome to PaperShare</h1>
+    <p class="lead">Manage and share question papers seamlessly.</p>
+    {% if not request.user.is_authenticated %}
+    <h6><a href="{% url 'login' %}">login</a> or <a href="{% url 'register' %}">register</a></h6>
+    {% endif %}
+</div>
+{% if request.user.is_authenticated %}
+<hr>
+<h2>My Papers</h2>
+{% if request.user.designation == "student" %}
+{% for paper in papers %}
+<a href="{% url 'view_student' paper.id %}" style="text-decoration: none">
+    <div class="card mb-3 {% if paper.open %}border-success{% else %}border-danger{% endif %}">
+        <div class="card-body">
+            <h5 class="card-title">Paper: {{ paper.name }}</h5>
+            <p class="card-text">
+                <strong>Professor:</strong> {{ paper.professor }}<br>
+                <strong>Sections:</strong> 
+                {% for section in paper.sections.all %}
+                    {{ section.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+</a>
+{% empty %}
+<h6>No papers for now!</h6>
+{% endfor %}
+{% else %}
+{% for paper in papers %}
+<a href="{% url 'view_prof' paper.id %}" style="text-decoration: none">
+    <div class="card mb-3 {% if paper.open %}border-success{% else %}border-danger{% endif %}">
+        <div class="card-body">
+            <h5 class="card-title">{{ paper.name }}</h5>
+            <p class="card-text">
+                <strong>Professor:</strong> {{ paper.professor }}<br>
+                <strong>Sections:</strong> 
+                {% for section in paper.sections.all %}
+                    {{ section.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+</a>
+{% empty %}
+<h6>No papers for now! Click <a href="{% url 'upload' %}">here</a> to upload</h6>
+{% endfor %} 
+{% endif %}
+{% endif %}
+{% endblock %}

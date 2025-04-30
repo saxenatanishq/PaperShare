@@ -1,0 +1,107 @@
+body{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+h2 {
+    margin-bottom: 1.5rem;
+}
+
+button {
+    background-color: #4f46e5;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin: 0.5rem 0;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+button:hover {
+    background-color: #4338ca;
+}
+
+.question, .subpart {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+}
+
+input[type="number"], input[type="text"], input[type="file"] {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.375rem;
+    margin: 0.5rem 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#questions_container {
+    margin-top: 1rem;
+}
+
+.subpartsContainer {
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+}
+
+.subpart-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin: 0.5rem 0;
+}
+
+.subpart-controls input[type="number"] {
+    width: 200px;
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+button {
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #3b82f6;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+}
+
+.btn-primary,.btn-danger{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.form-select{
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+textarea{
+    padding: 5px;
+}
+
+.border-danger{
+    border: 2px solid red;
+}
+
+.border-success{
+    border: 2px solid green;
+}

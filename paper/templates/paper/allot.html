@@ -1,0 +1,26 @@
+{% extends 'paper/layout.html' %}
+
+{% block title %}Allot{% endblock %}
+
+{% block body %}
+<h2>Allot sections to students here!</h2>
+<form action="{% url 'allot' %}" method="POST">
+    {% csrf_token %}
+    <label for="id_name">Name of the paper:</label>
+    <input type="text" name="name" maxlength="100" required id="id_name">
+    <label for="id_students">Add students:</label><br> 
+    {% for student in students %}
+    <label><input type="checkbox" name="students" value="{{student.id}}">{{student.username}}</label><br>
+    {% endfor %}
+    <button type="submit">Submit</button>          
+</form>
+
+<hr>
+<h2>Edit existing sections!</h2>
+{% for section in sections %}
+<div>
+    <h5><a href="{% url 'edit_section' section.id %}">{{section.name}}</a></h5>
+</div>
+{% endfor %}
+    
+{% endblock %}

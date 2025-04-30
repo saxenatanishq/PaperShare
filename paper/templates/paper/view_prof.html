@@ -1,0 +1,73 @@
+{% extends 'paper/layout.html' %}
+
+{% block title %}Review Paper{% endblock %}
+
+{% block body %}
+<h2>{{paper.name}}</h2>
+<h6>Professor: {{paper.professor}}</h6>
+<h6>Download Answers: <a href="{{ paper.pdf_file.url }}" download>Download PDF</a></h6>
+
+<div class="d-flex gap-2 mb-3">
+    <form action="{% url 'view_prof' paper.id %}" method="post">
+        {% csrf_token %}
+        {% if paper.open %}
+        <button type="submit" name="form_type" value="stop" class="btn btn-primary">Stop Accepting Responses</button>
+        {% else %}
+        <button type="submit" name="form_type" value="start" class="btn btn-primary">Start Accepting Responses</button>
+        {% endif %}
+    </form>
+    <form action="{% url 'view_prof' paper.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" name="form_type" value="delete" class="btn btn-danger">Delete Paper</button>
+    </form>
+</div>
+<h2>Reply to queries</h2>
+{% for query in queries_unres %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">Query by: {{ query.student }}</h5>
+        <p class="card-text">
+            <strong>Query:</strong> {{ query.query }}
+        </p>
+        <form action="{% url 'view_prof' paper.id %}" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="response_{{ query.id }}" class="form-label"><strong>Response:</strong></label>
+                <textarea name="response" id="response_{{ query.id }}" class="form-control" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="change_of_marks_{{ query.id }}" class="form-label"><strong>Change of Marks:</strong></label>
+                <input type="number" step="any" name="change_of_marks" id="change_of_marks_{{ query.id }}" class="form-control" required>
+            </div>
+            <button type="submit" name="form_type" value="{{ query.id }}" class="btn btn-primary">Complete Review</button>
+        </form>
+    </div>
+</div>
+{% empty %}
+<h6>No queries to review</h6>
+{% endfor %}
+<hr>
+<h2>Responded Queries</h2>
+{% for query in query_res %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">Query by: {{ query.student }}</h5>
+        <p class="card-text">
+            <strong>Identity:</strong> {{ query.identity }}<br>
+            <strong>Query:</strong> {{ query.query }}<br>
+        </p>
+        {% if query.resolved %}
+        <p class="card-text">
+            <strong>Response:</strong> {{ query.response }}<br>
+            <strong>Change of Marks:</strong> {{ query.change_of_marks }}<br>
+            <strong>Responded By:</strong> {{ query.paper.professor }}
+        </p>
+        {% else %}
+        <p class="card-text text-muted">No response yet!</p>
+        {% endif %}
+    </div>
+</div>  
+{% empty %}
+<h6>No queries responded</h6>
+{% endfor %}
+{% endblock %}

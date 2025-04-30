@@ -1,0 +1,26 @@
+{% extends 'paper/layout.html' %}
+
+{% block title %}Upload{% endblock %}
+
+{% block body %}
+<h3>Make the Question Paper Layout here!</h3>
+<button id="add_question" onclick="add_question()">Add question</button>
+<div id="questions_container"></div>
+<hr>
+<h3>Add details here</h3>
+<form action="{% url 'upload' %}" method="POST" enctype="multipart/form-data" onsubmit="return handleForm()">
+    {% csrf_token %}
+    <label for="name">Name of the paper</label>
+    <input type="text" name="name" maxlength="100" required id="id_name" placeholder="name">
+    <input type="hidden" name="questions" required id="id_questions">
+    <label for="id_pdf_file">Answer Key</label>
+    <input type="file" name="pdf_file" required id="id_pdf_file">
+    <label for="sections">Sections</label><br>
+    <div id="id_sections">
+        {% for section in sections %}
+        <label><input type="checkbox" name="sections" value="{{section.id}}">{{section.name}}</label><br>
+        {% endfor %}
+    </div>
+    <button type="submit">Uplaod</button>
+</form>
+{% endblock %}

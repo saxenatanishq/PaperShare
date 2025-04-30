@@ -1,0 +1,57 @@
+{% extends 'paper/layout.html' %}
+
+{% block title %}View Paper{% endblock %}
+
+{% block body %}
+<h2><strong>{{paper.name}}</strong></h2>
+<h6>Professor: {{paper.professor}}</h6>
+<h6>Download Answers: <a href="{{ paper.pdf_file.url }}" download>Download PDF</a></h6>
+{% if response1 %}
+<h6>Downlaod your response checked: <a href="{{ response1.pdf.url }}" download>Download PDF</a></h6>
+{% else %}
+<h6>Your response hasn't been uploaded yet</h6>
+{% endif %}
+{% if paper.open %}
+<hr>
+<h4>Add Query</h4>
+<form action="{% url 'view_student' paper.id %}" method="post">
+    {% csrf_token %}
+    <select class="form-select" name="identity" required id="id_identity">
+        {% for marks, option in options %}
+        <option value="{{option}}">{{option}} Marks: {{marks}}</option>
+        {% endfor %}
+    </select>
+    <div class="form-floating">
+        <textarea name="query" cols="100" rows="5" required id="id_query" placeholder="Add your query here"></textarea>
+    </div>
+    
+    <button type="submit">Submit Query</button>
+</form>
+{% else %}
+<h6 style="color: red;">{{paper.professor}} is no longer accepting responses</h6>
+{% endif %}
+<hr>
+<h2>My queries</h2>
+{% for query in queries %}
+<div class="card mb-3 {% if query.resolved %}border-success{% else %}border-danger{% endif %}">
+    <div class="card-body">
+        <h5 class="card-title">Query by: {{ query.student }}</h5>
+        <p class="card-text">
+            <strong>Identity:</strong> {{ query.identity }}<br>
+            <strong>Query:</strong> {{ query.query }}<br>
+        </p>
+        {% if query.resolved %}
+        <p class="card-text">
+            <strong>Response:</strong> {{ query.response }}<br>
+            <strong>Change of Marks:</strong> {{ query.change_of_marks }}<br>
+            <strong>Responded By:</strong> {{ query.paper.professor }}
+        </p>
+        {% else %}
+        <p class="card-text text-muted">No response yet!</p>
+        {% endif %}
+    </div>
+</div>
+{% empty %}
+<h6>No queries till now!</h6>
+{% endfor %}
+{% endblock %}
