@@ -29,10 +29,13 @@ def index(request):
     if request.user.is_authenticated:
         if request.user.designation == "student":
             sections = request.user.my_section.all()
+            # Returning all the papers which are for the section in which the student is
             papers = Paper.objects.filter(sections__in = sections).distinct()
         else:
+            # Returning all the papers which are made by the professor (current user)
             papers = Paper.objects.filter(professor = request.user)
     else:
+        # If the user in not logged in
         papers = []
     return render(request, "paper/index.html",{
         'papers':papers
@@ -89,7 +92,11 @@ def register(request):
     else:
         return render(request, "paper/register.html")
 
+# Function to upload a new paper
 def upload(request):
+    # Only the professors are allowed to uplaod new papers
+    if request.user.designation != "professor":
+        return HttpResponseRedirect(reverse('index'))
     if request.method == "POST":
         form = PaperForm(request.POST, request.FILES)
         if form.is_valid():
@@ -97,7 +104,6 @@ def upload(request):
             paper1.professor = request.user
             paper1.save()
             sections = form.cleaned_data.get('sections')
-            print(sections)
             if sections:
                 paper1.sections.set(sections)
             return HttpResponseRedirect(reverse('upload_checked', args=[paper1.id]))
@@ -112,17 +118,22 @@ def upload(request):
         'sections':Section.objects.all(),
     })
 
+# Function to upload the checked papers of the students who are the part of the sections which were selected in the paper
 def upload_checked(request, paper_id):
     paper = Paper.objects.get(pk = paper_id)
     students = []
+    # If a student is in multiple sections, he should not be counted twice
     for section in paper.sections.all():
         for student in section.students.all():
             if student not in students:
                 students.append(student)
+    
     if request.method == "POST":
+        # Seperate form element for each student
         for student in students:
             pdf = request.FILES.get(f"{student.id}")
             if pdf:
+                # Saving the answers for each student uplaoded by the prof
                 Answers.objects.create(
                     paper = paper,
                     student = student,
@@ -137,7 +148,10 @@ def upload_checked(request, paper_id):
         'students':students,
     })
 
+# Function to allot students in some section
 def allot(request):
+    if request.user.designation != 'professor':
+        return HttpResponseRedirect(reverse('index'))
     if request.method == "POST":
         form = SectionForm(request.POST)
         if form.is_valid():
@@ -150,10 +164,16 @@ def allot(request):
         'form':SectionForm(),
     })
 
+# Function to edit the section details in case some prof wants to
 def edit_section(request, section_id):
+    if request.user.designation != 'professor':
+        return HttpResponseRedirect(reverse('index'))
+    
     section = Section.objects.get(pk=section_id)
+
     if request.method == "POST":
         form_type = request.POST.get('form_type')
+        # In case the prof wants to delete the section, then the name of the form_type is "delete"
         if form_type == "delete":
             section.delete()
             return HttpResponseRedirect(reverse('allot'))
@@ -170,8 +190,16 @@ def edit_section(request, section_id):
         'form':SectionForm()
     })
 
+# Function to allow a student to view the paper details, his queries and responses (if any)
 def view_student(request, paper_id):
+    if request.user.designation != "student":
+        return HttpResponseRedirect(reverse('index'))
     paper = Paper.objects.get(pk=paper_id)
+    
+    # A function that uses DFS (Depth First Search) to translate the tree data into the subparts
+    # For eg. this function converts [[2,3],4] to a list [('Q1.a', 2),('Q1.b',3),('Q2',4)]
+    # Basically this function converts the arrays with arrays in them with arrays in them and so on to strings of the format "Q2.a.b.a"
+    # This string thus produced can be given to the student to choose from along with the marks that question carries
     def make_options(list1):
         options = []
         alphabets = list("abcdefghijklmnopqrstuvwxyz")
@@ -207,11 +235,15 @@ def view_student(request, paper_id):
         'response1': Answers.objects.filter(paper = paper, student = request.user).first()
     })
 
+# A function to allow the prof to look at the paper, the queries and reply to those queries
 def view_prof(request, paper_id):
+    if request.user.designation != "professor":
+        return HttpResponseRedirect(reverse('index'))
     paper1 = Paper.objects.get(pk=paper_id)
     if request.method == "POST":
         form_type = request.POST.get('form_type')
         try:
+            # num is the query number
             num = int(form_type)
             if type(num) == int:
                 query = Query.objects.get(pk=form_type)
@@ -220,12 +252,16 @@ def view_prof(request, paper_id):
                 query.resolved = True
                 query.save()
             else:
-                print("Type is not inetger1")
+                print("Type is not inetger")
         except:
+            # In case it is not the query reply, then it can be other things like
+            # Stop accepting queries
             if form_type == "stop":
                 paper1.open = False
+            # Again start accepting queries
             elif form_type == "start":
                 paper1.open = True
+            # deleting the paper itself
             elif form_type == "delete":
                 paper1.delete()
                 return HttpResponseRedirect(reverse(index))
@@ -233,7 +269,9 @@ def view_prof(request, paper_id):
                 return HttpResponseRedirect(reverse(index))
             paper1.save()
 
+    # Unresolved queries
     queries_unres = Query.objects.filter(paper = paper1, resolved = False)
+    # Resolved queries
     query_res = Query.objects.filter(paper = paper1, resolved = True)
     return render(request, 'paper/view_prof.html',{
         'paper': Paper.objects.get(pk=paper_id),
