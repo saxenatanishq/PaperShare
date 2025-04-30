@@ -6,7 +6,7 @@
 <h2>Allot sections to students here!</h2>
 <form action="{% url 'allot' %}" method="POST">
     {% csrf_token %}
-    <label for="id_name">Name of the paper:</label>
+    <label for="id_name">Name of the section:</label>
     <input type="text" name="name" maxlength="100" required id="id_name">
     <label for="id_students">Add students:</label><br> 
     {% for student in students %}
