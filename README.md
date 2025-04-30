@@ -51,7 +51,7 @@ Unlike previous course projects, which often cloned existing platforms (e.g., Gm
 
 ## Motivation
 
-The inspiration came from firsthand experience of the frustrating, informal process of physically approaching professors for mark reviews. PaperShare addresses this problem by digitizing and formalizing the process.
+The inspiration came from firsthand experience of the frustrating, informal process of physically approaching professors for mark reviews. PaperShare addresses this problem by digitizing and formalizing the process. Here is an image of the chaos because of this porcess being done in offline mode.
 <p align="center">
   <img src="media/checked_papers/WhatsApp%20Image%202025-04-30%20at%2020.13.11_b2049c8a.jpg" width="400" alt="group of students waiting in queue for their turn to review their answer sheet">
 </p>
