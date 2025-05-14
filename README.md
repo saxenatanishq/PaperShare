@@ -1,6 +1,20 @@
 # PaperShare
 
-**PaperShare** is a platform designed for schools and colleges to streamline the post-exam review process. Professors can return checked answer sheets digitally, and students can raise queries if they feel marks need reconsideration. Professors can respond and adjust scores if necessary, ensuring transparent and efficient communication.
+PaperShare is a simple web app that helps professors and students manage exam paper reviews online. After exams, professors can upload checked answer sheets, and students can log in to view their papers and ask doubts about any question where they feel their marks should have been higher.
+
+Think of it as a digital version of the usual post-exam process — where students wait in long lines to meet professors, discuss their marks, and carry physical copies of their papers. With PaperShare, this entire process happens through a website, saving time and keeping everything clear and organized.
+
+Professors can upload scanned PDFs of the evaluated papers, and students can look at their own papers and send a message if they have a doubt or feel there's a mistake in the marking. These messages are called queries, and professors can reply directly to them inside the app.
+
+The app also allows professors to structure the questions properly — including sub-questions like 1(a), 1(b), etc. Students can ask doubts for specific parts like 2(b)(iii), and the professor can view exactly what part the query is about.
+
+## Why is this useful?
+
+In many colleges, the answer sheet checking process ends with just showing the paper to the student. If they have doubts, there's usually no official system to raise those doubts properly or track what the professor said in reply. It often happens through verbal discussion, which can lead to confusion or disputes later.
+
+PaperShare solves this by giving students a proper space to submit doubts, and professors a place to reply — all connected to the paper and question number. Once a professor replies, the student sees the response clearly, and everything stays recorded.
+
+It's also helpful for professors who teach large batches. Instead of repeating the same explanation to 50 students, they can just reply inside the app and manage queries at their convenience. Professors can even choose when to stop accepting doubts for a paper by closing the query window.
 
 ---
 
@@ -16,50 +30,44 @@
 - [How to Run the Application](#how-to-run-the-application)
 - [Known Issues & Limitations](#known-issues--limitations)
 - [Future Improvements](#future-improvements)
-- [Project Screenshots](#project-screenshots)
+- [Project Runthrough](#project-runthrough)
 
 ---
 
 ## Distinctiveness and Complexity
 
-### What Makes This Project Unique?
+PaperShare is distinct from any course project in both its problem space and technical implementation. Rather than emulating a well-known platform (e.g., Wikipedia or social media apps), it is a problem-first system that addresses a specific administrative pain point within academic institutions: the inefficient process of answer sheet reviews after exams.
 
-Unlike previous course projects, which often cloned existing platforms (e.g., Gmail, Wikipedia), PaperShare is a problem-first solution developed from scratch to meet a real academic need—handling student-professor interactions after exam results.
+In most educational institutions, re-evaluation typically involves informal, in-person interactions which are time-consuming, unstructured, and prone to confusion. PaperShare replaces this with a centralized, role-based platform that manages scanned answer sheets, complex question hierarchies, and two-way structured communication.
 
-### Technical Challenges Faced
+### Architectural and Data Model Complexity
 
-1. **File Handling in Django**  
-   Integrating and managing PDF files using Django’s media system was initially unfamiliar territory.
+The platform supports multi-level question structures (like 1(a)(ii)), which are modeled as trees and encoded in JSON. Displaying and managing such structures required implementing tree traversal algorithms (DFS using stack) in both the backend and frontend. Additionally, the system is built to differentiate user roles (student, professor) and enforce custom permission rules, which added significant complexity to both authentication and authorization flows.
 
-2. **Complex Question Paper Structures**  
-   Handling nested subparts in question papers (e.g., 1(a)(ii)) posed a structural challenge.
+Further, the handling of scanned answer sheets in PDF format was a challenge, as Django’s default file handling does not offer out-of-the-box features for associating these with specific student-paper combinations. The media handling required precise model relations and validation rules to ensure uploaded files were correctly stored, served, and accessed securely.
 
-### How They Were Solved
+### Frontend and UI Decisions
 
-1. **Learning Through Documentation**  
-   Django documentation and online tutorials were used to understand media file integration.
+The application also required a JavaScript-enhanced frontend, especially to render nested question formats interactively and allow dynamic query submission. The project is fully mobile responsive, using custom CSS and JavaScript to ensure usability across devices, which was a deliberate design decision to reflect real-world application constraints.
 
-2. **Using Tree Data Structures**  
-   A custom tree structure was implemented and encoded to JSON. It was then decoded using a depth-first search (DFS) approach using stacks.
+### Summary
 
-### Complex Features Implemented
-
-- PDF file handling with media integration.
-- Recursive parsing and display of complex question formats using tree-based logic.
+This project is more than just a web app — it’s a domain-specific tool with strong ties to real institutional workflows. The requirement to model, track, and visualize data interactions between students and professors, in conjunction with media management and data validation, sets it apart in complexity.
 
 ---
 
 ## Motivation
 
-The inspiration came from firsthand experience of the frustrating, informal process of physically approaching professors for mark reviews. PaperShare addresses this problem by digitizing and formalizing the process. Here is an image of the chaos because of this being done in offline mode.
-<p align="center">
-  <img src="media/checked_papers/WhatsApp%20Image%202025-04-30%20at%2020.13.11_b2049c8a.jpg" width="400" alt="group of students waiting in queue for their turn to review their answer sheet">
-</p>
+The inspiration came from personal frustration with the manual process of reviewing exam answer sheets. Students often wait in long queues, and discussions with professors about marks can be chaotic and undocumented. Here's a snapshot of the real-life chaos this app aims to eliminate:
+
+<p align="center"> <img src="media/checked_papers/WhatsApp%20Image%202025-04-30%20at%2020.13.11_b2049c8a.jpg" width="400" alt="Students waiting in line"> </p>
+PaperShare was developed to digitize and formalize this process — saving time for both students and professors and increasing transparency.
 
 ## Target Audience
 
-- **Schools and Colleges**
-- **Professors and Students** who participate in exam-based assessments.
+- **Educational Institutions** (schools, colleges, universities)
+- **Professors** who want to efficiently handle post-exam queries
+- **Students** looking for transparent ways to request re-evaluation
 
 ---
 
@@ -87,6 +95,7 @@ The inspiration came from firsthand experience of the frustrating, informal proc
 
 - **Backend:** Django  
 - **Frontend:** HTML, CSS, JavaScript
+- **Database** SQLite
 
 ---
 
@@ -96,6 +105,7 @@ The inspiration came from firsthand experience of the frustrating, informal proc
 - `paper/static/paper/` – CSS and JavaScript files  
 - `paper/views.py` – Backend views logic  
 - `paper/models.py` – Data models
+- `media/` – Stored uploaded answer sheet PDFs
 
 ---
 
@@ -154,6 +164,7 @@ Follow these steps to set up and run the Django application locally:
    ```
 
 5. **Create a Superuser**
+   Note: I have deleted all the accounts and data from here, so you'll need to create everything new from your side including superuser and users
    ```bash
    python manage.py createsuperuser
    ```
@@ -204,17 +215,11 @@ Follow these steps to set up and run the Django application locally:
    - Reopen unresolved or unsatisfactory queries
    - Provide feedback for improvement
 
+## Additional Information for Staff
+
+- Browser Compatibility: The application has been tested on Chrome, Firefox, and Edge. Some PDF rendering features may not work properly on Safari.
+- Testing Accounts: For testing purposes, you can create accounts and passwords of your choice from the interface only.
+- Mobile Responsiveness: The interface is responsive but works best on desktop for professors uploading and reviewing papers.
+- Development Notes: The application was developed using Django 5.2.1 on Python 3.13.3
+
 ---
-
-## Project Screenshots
-
-<p align="center">
-  <img src="https://github.com/saxenatanishq/PaperShare/blob/main/media/checked_papers/1.jpeg" width="300" alt="Description">
-  <img src="https://github.com/saxenatanishq/PaperShare/blob/main/media/checked_papers/2.jpeg" width="300" alt="Description">
-  <img src="https://github.com/saxenatanishq/PaperShare/blob/main/media/checked_papers/3.jpeg" width="300" alt="Description">
-  <img src="https://github.com/saxenatanishq/PaperShare/blob/main/media/checked_papers/4.jpeg" width="300" alt="Description">
-  <img src="https://github.com/saxenatanishq/PaperShare/blob/main/media/checked_papers/5.jpeg" width="300" alt="Description">
-  <img src="https://github.com/saxenatanishq/PaperShare/blob/main/media/checked_papers/6.jpeg" width="300" alt="Description">
-  <img src="https://github.com/saxenatanishq/PaperShare/blob/main/media/checked_papers/7.jpeg" width="300" alt="Description">
-  <img src="https://github.com/saxenatanishq/PaperShare/blob/main/media/checked_papers/8.jpeg" width="300" alt="Description">
-</p>
