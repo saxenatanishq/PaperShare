@@ -1,5 +1,23 @@
-body{
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+body {
+    font-family: 'Trebuchet MS', sans-serif, Arial, Helvetica;
+}
+
+.navbar-nav .nav-link {
+    padding: 0.5rem 1rem;
+}
+
+@media (max-width: 768px) {
+    .navbar-nav {
+        flex-direction: column;
+    }
+
+    .content {
+        padding: 1rem;
+    }
+
+    .form-control, .form-select, button {
+        width: 100%;
+    }
 }
 
 h2 {

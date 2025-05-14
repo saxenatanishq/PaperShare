@@ -13,7 +13,7 @@
 <h2>My Papers</h2>
 {% if request.user.designation == "student" %}
 {% for paper in papers %}
-<a href="{% url 'view_student' paper.id %}" style="text-decoration: none">
+<a href="{% url 'view_student' paper.id %}" class="text-decoration-none">
     <div class="card mb-3 {% if paper.open %}border-success{% else %}border-danger{% endif %}">
         <div class="card-body">
             <h5 class="card-title">Paper: {{ paper.name }}</h5>
@@ -32,7 +32,7 @@
 {% endfor %}
 {% else %}
 {% for paper in papers %}
-<a href="{% url 'view_prof' paper.id %}" style="text-decoration: none">
+<a href="{% url 'view_prof' paper.id %}" class="text-decoration-none">
     <div class="card mb-3 {% if paper.open %}border-success{% else %}border-danger{% endif %}">
         <div class="card-body">
             <h5 class="card-title">{{ paper.name }}</h5>
